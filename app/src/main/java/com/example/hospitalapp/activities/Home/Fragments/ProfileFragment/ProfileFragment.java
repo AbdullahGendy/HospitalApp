@@ -1,5 +1,7 @@
 package com.example.hospitalapp.activities.Home.Fragments.ProfileFragment;
 
+import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -7,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -17,6 +18,7 @@ import com.example.hospitalapp.Network.NetworkUtil;
 import com.example.hospitalapp.R;
 import com.example.hospitalapp.Utills.Constant;
 import com.example.hospitalapp.Utills.Validation;
+import com.example.hospitalapp.activities.Login.LoginActivity;
 
 import java.util.Objects;
 
@@ -40,9 +42,21 @@ public class ProfileFragment extends Fragment {
         textViewHospitalCity = view.findViewById(R.id.text_view_hospital_city);
         textViewHospitalPhoneNumber = view.findViewById(R.id.text_view_hospital_phone_number);
         textViewHospitalAddress = view.findViewById(R.id.text_view_hospital_address);
+        TextView textViewLogOut = view.findViewById(R.id.text_view_log_out);
+
         mSubscriptions = new CompositeSubscription();
         SharedPreferences mSharedPreferences = Objects.requireNonNull(getActivity()).getSharedPreferences("MySharedPreference", MODE_PRIVATE);
         getHospitalInfo(mSharedPreferences.getString(Constant.accessToken, ""));
+        textViewLogOut.setOnClickListener(v -> {
+            @SuppressLint("CommitPrefEdits") SharedPreferences.Editor editor = mSharedPreferences.edit();
+            editor.putString(Constant.accessToken, "");
+            editor.putBoolean(Constant.rememberMe, false);
+            editor.apply();
+            Objects.requireNonNull(getActivity()).finish();
+            Intent intent = new Intent(getActivity(), LoginActivity.class);
+            getActivity().startActivity(intent);
+        });
+
 
         return view;
     }
